@@ -48,7 +48,7 @@ void makeMove() {
 void setup() {
   Serial.begin(9600);
 
-  for (int i = 0; i < 8; ++i) pinMode(FIRST_PIN+i, OUTPUT);
+  for (int i = 0; i < 8; ++i) pinMode(FIRST_PIN + i, OUTPUT);
   pinMode(RX_PIN, INPUT);
   pinMode(CLOCK_PIN, INPUT);
 }
