@@ -77,7 +77,8 @@ void loop() {
   
   //Если часы были переключены, мы сообщаем об этом компьютеру
   if(clock_signal != digitalRead(CLOCK_PIN)) {
-    if(clock_signal = digitalRead(CLOCK_PIN) Serial.write(1);
+    clock_signal = digitalRead(CLOCK_PIN);
+    if(clock_signal) Serial.write(1);
     delay(150);
   }
   
