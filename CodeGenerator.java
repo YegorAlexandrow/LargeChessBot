@@ -39,9 +39,9 @@ public class CodeGenerator {
 		
 		if("CASEFULLCMD".equals(cmd.toUpperCase())) {
 			return tab(t++) + "if(in[7] == " + in.next() + " && in[6] == " + in.next() +
-							" && (in[5] == " + in.next() + " && in[4] == " + in.next() + 
-							" && (in[3] == " + in.next() + " && in[2] == " + in.next() + 
-							" && (in[1] == " + in.next() + " && in[0] == " + in.next() + ") {\n\n" + makeCase() + tab(--t) + "}\n\n";
+					" && (in[5] == " + in.next() + " && in[4] == " + in.next() + 
+					" && (in[3] == " + in.next() + " && in[2] == " + in.next() + 
+					" && (in[1] == " + in.next() + " && in[0] == " + in.next() + ") {\n\n" + makeCase() + tab(--t) + "}\n\n";
 		}
 		
 		if("END.".equals(cmd.toUpperCase())) {
@@ -112,9 +112,9 @@ public class CodeGenerator {
 						 " && in[2] == " + (i>>2)%2 +
 						 " && in[1] == " + (i>>1)%2 +
 						 " && in[0] == " + (i>>0)%2 + ") {\n" + 
-						 ("UP".equals(arg.toUpperCase()) ? 	tab(t+1) + "moveToPoint(" + decodeField(i) + "_l);\n" + tab(t+1) + "moveToPoint("+decodeField(i)+"_u);\n" : 
-							 								tab(t+1) + "moveToPoint(" + decodeField(i) + "_u);\n" + tab(t+1) + "moveToPoint("+decodeField(i)+"_l);\n") +
-							 								tab(t) + "}\n\n";
+			("UP".equals(arg.toUpperCase()) ? tab(t+1) + "moveToPoint(" + decodeField(i) + "_l);\n" + tab(t+1) + "moveToPoint("+decodeField(i)+"_u);\n" : 
+							  tab(t+1) + "moveToPoint(" + decodeField(i) + "_u);\n" + tab(t+1) + "moveToPoint("+decodeField(i)+"_l);\n") +
+							  tab(t) + "}\n\n";
 		}
 		
 		return s;
