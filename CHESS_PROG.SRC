@@ -3,7 +3,7 @@ DEF CHESS_PROG( )
 	DECL INT content, header, last_content, last_header;
 	
 	PTP HOME Vel=100% DEFAULT
-	INIT_BOARD(board[,], 30, 6, 65)
+	INIT_BOARD(board[,], 30, 6, 90)
 	
 	LOOP
 		$OUT[1] = TRUE
@@ -20,29 +20,29 @@ DEF CHESS_PROG( )
 				CASE 1
 					$OUT[1] = FALSE
 					MOVE(board[2, content+1], board[1, content+1])
-					;Отпустить фигуру (???)
+					PUT_FIG( );
 					MOVE(board[1, content+1], board[2, content+1])
 					
 				CASE 2
 					$OUT[1] = FALSE
 					MOVE(board[2, content+1], board[1, content+1])
-					;Взять фигуру (???)
+					TAKE_FIG( );
 					MOVE(board[1, content+1], board[2, content+1])
 					
 				CASE 3
 					$OUT[1] = FALSE
 					MOVE(board[2, content+1], board[1, content+1])
-					;Взять фигуру (???)
+					TAKE_FIG( );
 					MOVE(board[1, content+1], board[2, content+1])
 					
 					PTP point_chess_box
 					WAIT SEC 1.2
-					;Отпустить фигуру (???)
+					PUT_FIG( );
 				CASE 0
 					SWITCH content
 						CASE 1
 							$OUT[1] = FALSE
-							PTP point_base
+							LIN point_base
 							WAIT SEC 1.2
 							
 						CASE 2
@@ -56,6 +56,14 @@ DEF CHESS_PROG( )
 			ENDSWITCH
 		ENDIF
 	ENDLOOP
+END
+
+DEF TAKE_FIG( )
+
+END
+
+DEF PUT_FIG( )
+
 END
 
 DEFFCT INT GET_CMD_CONTENT( )
@@ -81,7 +89,7 @@ ENDFCT
 DEF MOVE(pt1 : IN, pt2 : IN)
 	DECL POS pt1, pt2
 	
-	PTP pt1
+	LIN pt1
 	WAIT SEC 1.2
 	LIN pt2
 	WAIT SEC 0.6
