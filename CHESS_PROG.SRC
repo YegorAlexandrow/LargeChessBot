@@ -1,0 +1,101 @@
+DEF CHESS_PROG( )
+	DECL POS board[2, 64]
+	DECL INT content, header, last_content, last_header;
+	
+	PTP HOME Vel=100% DEFAULT
+	INIT_BOARD(board[,], 30, 6, 65)
+	
+	LOOP
+		$OUT[1] = TRUE
+		WAIT SEC 0.3
+		
+		last_header = header
+		last_content = content
+		
+		header  = GET_CMD_HEADER()
+		content = GET_CMD_CONTENT()
+		
+		IF last_content <> content OR last_header <> header THEN
+			SWITCH header
+				CASE 1
+					$OUT[1] = FALSE
+					MOVE(board[2, content+1], board[1, content+1])
+					;Отпустить фигуру (???)
+					MOVE(board[1, content+1], board[2, content+1])
+					
+				CASE 2
+					$OUT[1] = FALSE
+					MOVE(board[2, content+1], board[1, content+1])
+					;Взять фигуру (???)
+					MOVE(board[1, content+1], board[2, content+1])
+					
+				CASE 3
+					$OUT[1] = FALSE
+					MOVE(board[2, content+1], board[1, content+1])
+					;Взять фигуру (???)
+					MOVE(board[1, content+1], board[2, content+1])
+					
+					PTP point_chess_box
+					WAIT SEC 1.2
+					;Отпустить фигуру (???)
+				CASE 0
+					SWITCH content
+						CASE 1
+							$OUT[1] = FALSE
+							PTP point_base
+							WAIT SEC 1.2
+							
+						CASE 2
+							$OUT[1] = FALSE
+							MOVE(point_clock1, point_clock2);
+							MOVE(point_clock2, point_clock1);
+							
+						CASE 31
+							EXIT
+					ENDSWITCH
+			ENDSWITCH
+		ENDIF
+	ENDLOOP
+END
+
+DEFFCT INT GET_CMD_CONTENT( )
+	DECL INT result = 0, i
+	
+	FOR i = 1 TO 6 STEP 1
+		result = result * 2
+		IF &IN[i] == TRUE THEN result = result + 1 ENDIF
+	ENDFOR
+	
+	RETURN result
+END
+
+DEFFCT INT GET_CMD_HEADER( )
+	DECL INT result = 0
+	
+	IF $IN[7] == TRUE THEN result = result + 1 ENDIF
+	IF $IN[8] == TRUE THEN result = result + 2 ENDIF
+	
+	RETURN result
+END
+
+DEF MOVE(pt1 : IN, pt2 : IN)
+	DECL POS pt1, pt2
+	
+	PTP pt1
+	WAIT SEC 1.2
+	LIN pt2
+	WAIT SEC 0.6
+END
+
+DEF INIT_BOARD(board[,] : OUT, w : IN, h1 : IN, h2 : IN)
+	DECL POS board[,]
+	DECL INT w, h1, h2
+	DECL INT x, y
+	
+	FOR y = 0 TO 7 STEP 1
+		FOR x = 1 TO 8 STEP 1
+			board[1, y * 8 + x] = {X (w * x - w / 2), Y (w * y + w / 2), Z h1, A 0, B 0, C 0}
+			board[2, y * 8 + x] = {X (w * x - w / 2), Y (w * y + w / 2), Z h2, A 0, B 0, C 0}
+		ENDFOR
+	ENDFOR	
+END
