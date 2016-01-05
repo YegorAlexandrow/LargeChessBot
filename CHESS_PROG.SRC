@@ -67,7 +67,7 @@ DEFFCT INT GET_CMD_CONTENT( )
 	ENDFOR
 	
 	RETURN result
-END
+ENDFCT
 
 DEFFCT INT GET_CMD_HEADER( )
 	DECL INT result = 0
@@ -76,7 +76,7 @@ DEFFCT INT GET_CMD_HEADER( )
 	IF $IN[8] == TRUE THEN result = result + 2 ENDIF
 	
 	RETURN result
-END
+ENDFCT
 
 DEF MOVE(pt1 : IN, pt2 : IN)
 	DECL POS pt1, pt2
