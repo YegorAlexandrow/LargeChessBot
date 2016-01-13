@@ -1,6 +1,7 @@
 
 #define CMD_HOME    B00000001 //Команда "Встать в положение ожидания хода"
 #define CMD_CLOCK   B00000010 //Команда "Нажать на часы"
+#define CMD_FINISH  B00111111 //Команда "Закончить работу"
 #define HEADER_OUT  B11000000 //Заголовок команды "Убрать фигуру с доски"
 #define HEADER_PUT  B01000000 //Заголовок команды "Поставить фигуру"
 #define HEADER_TAKE B10000000 //Заголовок команды "Взять фигуру"
@@ -13,6 +14,7 @@
 #define MOVE_MARK 'M'        //Передвинуть фигуру
 #define NEW_GAME_MARK 'N'    //Начать новую игру
 #define CAPTURE_FIG_MARK 'C' //Убрать фигуру с доски
+#define FINISH_MARK 'F' //Убрать фигуру с доски
 
 
 
@@ -48,7 +50,7 @@ void makeMove() {
 void setup() {
   Serial.begin(9600);
 
-  for (int i = 0; i < 8; ++i) pinMode(FIRST_PIN + i, OUTPUT);
+  for (int i = 0; i < 8; ++i) pinMode(FIRST_PIN, OUTPUT);
   pinMode(RX_PIN, INPUT);
   pinMode(CLOCK_PIN, INPUT);
 }
@@ -70,6 +72,9 @@ void loop() {
       
       case NEW_GAME_MARK: 
           addToArrayList(CMD_HOME); break;
+		  
+      case FINISH_MARK: 
+          addToArrayList(CMD_FINISH); break;
       
       default: Serial.flush(); break;
     }
@@ -77,8 +82,7 @@ void loop() {
   
   //Если часы были переключены, мы сообщаем об этом компьютеру
   if(clock_signal != digitalRead(CLOCK_PIN)) {
-    clock_signal = digitalRead(CLOCK_PIN);
-    if(clock_signal) Serial.write(1);
+    if(clock_signal = digitalRead(CLOCK_PIN)) Serial.write(1);
     delay(150);
   }
   
@@ -86,8 +90,8 @@ void loop() {
   //Отправляем её и ждём, когда робот на нее среагирует
   if(digitalRead(RX_PIN) && ptr != ptr_last) {
     sendNextCommand();
-    delay(250);
+    delay(200);
   }
 
-  delay(100);
+  delay(50);
 }
