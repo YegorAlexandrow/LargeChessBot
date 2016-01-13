@@ -6,44 +6,44 @@ DEF CHESS_TEST( )
 	
 	INIT_BOARD(board[,], 30, 6, 90)
 	
+	TEST_BOARD(pt_base)
+	TEST_BOARD(pt_clock_high)
+	TEST_BOARD(pt_chess_box)
+END
+
+DEF TEST_BOARD(pt: IN)
+	DECL E6POS pt
+
 	FOR i = 1 TO 64 STEP 1
-		MOVE(board[2, i], board[1, i])
-		MOVE(board[1, i], board[2, i])
-		MOVE(board[1, i], board[1, i])
-		MOVE(board[2, i], board[2, i])
-		
-		MOVE(board[2, i], point_base)
-	ENDFOR
 	
-	FOR i = 1 TO 64 STEP 1
-		MOVE(board[2, i], board[1, i])
-		MOVE(board[1, i], board[2, i])
-		MOVE(board[1, i], board[1, i])
-		MOVE(board[2, i], board[2, i])
+		LIN start_pt : board[2, content+1] Vel= 0.5 m/s
+		WAIT SEC 1.2
+		LIN start_pt : board[1, content+1] Vel= 0.5 m/s
+		WAIT SEC 1.2
+		LIN start_pt : board[2, content+1] Vel= 0.5 m/s
+		WAIT SEC 1.2
 		
-		MOVE(board[2, i], point_chess_box)
-	ENDFOR
-	
-	FOR i = 1 TO 64 STEP 1
-		MOVE(board[2, i], board[1, i])
-		MOVE(board[1, i], board[2, i])
-		MOVE(board[1, i], board[1, i])
-		MOVE(board[2, i], board[2, i])
+		LIN start_pt : board[2, content+1] Vel= 0.5 m/s
+		WAIT SEC 1.2
+		LIN start_pt : board[1, content+1] Vel= 0.5 m/s
+		WAIT SEC 1.2
+		LIN start_pt : board[2, content+1] Vel= 0.5 m/s
+		WAIT SEC 1.2
 		
-		MOVE(point_clock_high, point_clock_low);
-		MOVE(point_clock_low, point_clock_high);
+		LIN pt Vel= 0.5 m/s
+		WAIT SEC 1.2
 	ENDFOR
 END
 
 DEF INIT_BOARD(board[,] : OUT, w : IN, h1 : IN, h2 : IN)
-	DECL POS board[,]
+	DECL E6POS board[,]
 	DECL INT w, h1, h2
 	DECL INT x, y
 	
 	FOR y = 0 TO 7 STEP 1
 		FOR x = 1 TO 8 STEP 1
-			board[1, y * 8 + x] = {X (w * x - w / 2), Y (w * y + w / 2), Z h1, A 0, B 0, C 0}
-			board[2, y * 8 + x] = {X (w * x - w / 2), Y (w * y + w / 2), Z h2, A 0, B 0, C 0}
+			board[1, y * 8 + x] = {X (w * x - w / 2), Y (w * y + w / 2), Z h1, A 0, B 0, C 0, E1 0, E2 0, E3 0, E4 0, E5 0, E6 0}
+			board[2, y * 8 + x] = {X (w * x - w / 2), Y (w * y + w / 2), Z h2, A 0, B 0, C 0, E1 0, E2 0, E3 0, E4 0, E5 0, E6 0}
 		ENDFOR
 	ENDFOR	
 END
