@@ -2,7 +2,19 @@ DEF CHESS_PROG( )
 	DECL POS board[2, 64]
 	DECL INT content, header, last_content, last_header;
 	
-	PTP HOME Vel=100% DEFAULT
+	;FOLD INI
+	  ;FOLD BASISTECH INI
+		GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+		INTERRUPT ON 3 
+		BAS (#INITMOV,0 )
+	  ;ENDFOLD (BASISTECH INI)
+	  ;FOLD USER INI
+		;Make your modifications here
+
+	  ;ENDFOLD (USER INI)
+	;ENDFOLD (INI)
+	
+	PTP HOME Vel= 50% DEFAULT
 	INIT_BOARD(board[,], 30, 6, 90)
 	
 	LOOP
@@ -19,36 +31,62 @@ DEF CHESS_PROG( )
 			SWITCH header
 				CASE 1
 					$OUT[1] = FALSE
-					MOVE(board[2, content+1], board[1, content+1])
+					
+					LIN start_pt : board[2, content+1] Vel= 0.5 m/s
+					WAIT SEC 1.2
+					LIN start_pt : board[1, content+1] Vel= 0.5 m/s
+					WAIT SEC 1.2
+					
 					PUT_FIG( );
-					MOVE(board[1, content+1], board[2, content+1])
+					
+					LIN start_pt : board[2, content+1] Vel= 0.5 m/s
+					WAIT SEC 1.2
 					
 				CASE 2
 					$OUT[1] = FALSE
-					MOVE(board[2, content+1], board[1, content+1])
+					
+					LIN start_pt : board[2, content+1] Vel= 0.5 m/s
+					WAIT SEC 1.2
+					LIN start_pt : board[1, content+1] Vel= 0.5 m/s
+					WAIT SEC 1.2
+					
 					TAKE_FIG( );
-					MOVE(board[1, content+1], board[2, content+1])
+					
+					LIN start_pt : board[2, content+1] Vel= 0.5 m/s
+					WAIT SEC 1.2
 					
 				CASE 3
 					$OUT[1] = FALSE
-					MOVE(board[2, content+1], board[1, content+1])
-					TAKE_FIG( );
-					MOVE(board[1, content+1], board[2, content+1])
 					
-					PTP point_chess_box
+					LIN start_pt : board[2, content+1] Vel= 0.5 m/s
+					WAIT SEC 1.2
+					LIN start_pt : board[1, content+1] Vel= 0.5 m/s
+					WAIT SEC 1.2
+					
+					TAKE_FIG( );
+					
+					LIN start_pt : board[2, content+1] Vel= 0.5 m/s
+					WAIT SEC 1.2
+					
+					LIN pt_chess_box : board[2, content+1] Vel= 0.5 m/s
 					WAIT SEC 1.2
 					PUT_FIG( );
+					
 				CASE 0
 					SWITCH content
 						CASE 1
 							$OUT[1] = FALSE
-							LIN point_base
+							LIN pt_base Vel= 0.5 m/s
 							WAIT SEC 1.2
 							
 						CASE 2
 							$OUT[1] = FALSE
-							MOVE(point_clock1, point_clock2);
-							MOVE(point_clock2, point_clock1);
+							LIN pt_clock_high Vel= 0.5 m/s
+							WAIT SEC 1.2
+							LIN pt_clock_low Vel= 0.5 m/s
+							WAIT SEC 1.2
+							LIN pt_clock_high Vel= 0.5 m/s
+							WAIT SEC 1.2
 							
 						CASE 31
 							EXIT
@@ -59,11 +97,17 @@ DEF CHESS_PROG( )
 END
 
 DEF TAKE_FIG( )
-
+	$OUT[?] = TRUE
+	$OUT[?] = FALSE
+	
+	WAIT FOR $IN[?] = TRUE 
 END
 
 DEF PUT_FIG( )
-
+	$OUT[?] = FALSE
+	$OUT[?] = TRUE
+	
+	WAIT FOR $IN[?] = TRUE 
 END
 
 DEFFCT INT GET_CMD_CONTENT( )
@@ -86,15 +130,6 @@ DEFFCT INT GET_CMD_HEADER( )
 	RETURN result
 ENDFCT
 
-DEF MOVE(pt1 : IN, pt2 : IN)
-	DECL POS pt1, pt2
-	
-	LIN pt1
-	WAIT SEC 1.2
-	LIN pt2
-	WAIT SEC 0.6
-END
-
 DEF INIT_BOARD(board[,] : OUT, w : IN, h1 : IN, h2 : IN)
 	DECL POS board[,]
 	DECL INT w, h1, h2
@@ -102,8 +137,8 @@ DEF INIT_BOARD(board[,] : OUT, w : IN, h1 : IN, h2 : IN)
 	
 	FOR y = 0 TO 7 STEP 1
 		FOR x = 1 TO 8 STEP 1
-			board[1, y * 8 + x] = {X (w * x - w / 2), Y (w * y + w / 2), Z h1, A 0, B 0, C 0}
-			board[2, y * 8 + x] = {X (w * x - w / 2), Y (w * y + w / 2), Z h2, A 0, B 0, C 0}
+			board[1, y * 8 + x] = {X (w * x - w / 2), Y (w * y + w / 2), Z h1, A 0, B 0, C 0, E1 0, E2 0, E3 0, E4 0, E5 0, E6 0}
+			board[2, y * 8 + x] = {X (w * x - w / 2), Y (w * y + w / 2), Z h2, A 0, B 0, C 0, E1 0, E2 0, E3 0, E4 0, E5 0, E6 0}
 		ENDFOR
 	ENDFOR	
 END
