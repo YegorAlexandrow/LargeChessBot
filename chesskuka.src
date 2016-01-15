@@ -45,7 +45,7 @@ DEF chesskuka( )
 				LDAT_ACT = LCPDAT1
 				FDAT_ACT = Fstart_pt
 				BAS(#CP_PARAMS, 0.5)
-				PTP Xstart_pt 
+				LIN Xstart_pt 
 			;ENDFOLD
 	ENDFOR	
 	
@@ -58,7 +58,7 @@ DEF chesskuka( )
 				LDAT_ACT = LCPDAT1
 				FDAT_ACT = Fstart_pt
 				BAS(#CP_PARAMS, 0.5)
-				PTP Xstart_pt 
+				LIN Xstart_pt 
 			;ENDFOLD
 	ENDFOR
 
