@@ -37,8 +37,8 @@ DEF chesskuka( )
 	;ENDFOLD
 			
 	FOR i = 1 TO 63 STEP
-			MOVE_FIELD(Xzero_pt, board[2, i], TRUE)
-			MOVE_FIELD(Xzero_pt, board[2, i+1], FALSE)
+			MOVE_FIELD(Xzero_pt, board[i], TRUE)
+			MOVE_FIELD(Xzero_pt, board[i+1], FALSE)
 			
 			;FOLD LIN start_pt Vel=0.5 m/s CPDAT1 Tool[1] Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:start_pt, 3:, 5:0.5, 7:CPDAT1
 				$BWDSTART = FALSE
@@ -50,8 +50,8 @@ DEF chesskuka( )
 	ENDFOR	
 	
 	FOR i = 1 TO 15 STEP
-			MOVE_FIELD(Xdel_pt, board[2, i], TRUE)
-			MOVE_FIELD(Xdel_pt, board[2, i+1], FALSE)
+			MOVE_FIELD(Xdel_pt, del_figs[i], TRUE)
+			MOVE_FIELD(Xdel_pt, del_figs[i+1], FALSE)
 			
 			;FOLD LIN start_pt Vel=0.5 m/s CPDAT1 Tool[1] Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:start_pt, 3:, 5:0.5, 7:CPDAT1
 				$BWDSTART = FALSE
