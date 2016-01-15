@@ -1,0 +1,118 @@
+&ACCESS RVP
+&REL 54
+&PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
+&PARAM EDITMASK = * 
+DEF chesskuka( )
+	DECL INT i
+	
+    ;FOLD INI
+        ;FOLD BASISTECH INI
+            GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS == TRUE DO IR_STOPM ( )
+            INTERRUPT ON 3 
+            BAS (#INITMOV, 0 )
+        ;ENDFOLD (BASISTECH INI)
+        ;FOLD USER INI
+            ;Make your modifications here
+            
+        ;ENDFOLD (USER INI)
+    ;ENDFOLD (INI)
+    
+    ;FOLD PTP HOME  Vel= 100 % DEFAULT;%{PE}%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:HOME, 3:, 5:100, 7:DEFAULT
+        $BWDSTART = FALSE
+        PDAT_ACT = PDEFAULT
+        FDAT_ACT = FHOME
+        BAS (#PTP_PARAMS, 100 )
+        $H_POS = XHOME
+        PTP XHOME
+    ;ENDFOLD
+	
+	GRIP(FALSE)
+	
+	;FOLD PTP start_pt Vel=100 % PDAT8 Tool[1] Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:start_pt, 3:, 5:100, 7:PDAT8
+		$BWDSTART = FALSE
+		PDAT_ACT = PPDAT8
+		FDAT_ACT = Fstart_pt
+		BAS(#PTP_PARAMS, 100)
+		PTP Xstart_pt 
+	;ENDFOLD
+			
+	FOR i = 1 TO 63 STEP
+			MOVE_FIELD(Xzero_pt, board[2, i], TRUE)
+			MOVE_FIELD(Xzero_pt, board[2, i+1], FALSE)
+			
+			;FOLD LIN start_pt Vel=0.5 m/s CPDAT1 Tool[1] Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:start_pt, 3:, 5:0.5, 7:CPDAT1
+				$BWDSTART = FALSE
+				LDAT_ACT = LCPDAT1
+				FDAT_ACT = Fstart_pt
+				BAS(#CP_PARAMS, 0.5)
+				PTP Xstart_pt 
+			;ENDFOLD
+	ENDFOR	
+	
+	FOR i = 1 TO 15 STEP
+			MOVE_FIELD(Xdel_pt, board[2, i], TRUE)
+			MOVE_FIELD(Xdel_pt, board[2, i+1], FALSE)
+			
+			;FOLD LIN start_pt Vel=0.5 m/s CPDAT1 Tool[1] Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:start_pt, 3:, 5:0.5, 7:CPDAT1
+				$BWDSTART = FALSE
+				LDAT_ACT = LCPDAT1
+				FDAT_ACT = Fstart_pt
+				BAS(#CP_PARAMS, 0.5)
+				PTP Xstart_pt 
+			;ENDFOLD
+	ENDFOR
+
+    GRIP(TRUE)
+	
+    ;FOLD PTP HOME  Vel= 100 % DEFAULT;%{PE}%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:HOME, 3:, 5:100, 7:DEFAULT
+        $BWDSTART = FALSE
+        PDAT_ACT = PDEFAULT
+        FDAT_ACT = FHOME
+        BAS (#PTP_PARAMS, 100 )
+        $H_POS = XHOME
+        PTP XHOME
+    ;ENDFOLD
+    
+    
+END
+
+DEF MOVE_FIELD(pt_low :IN, pt_high :IN, grip :IN)
+	DECL E6POS pt, pt_offset
+	DECL BOOL grip
+	
+	;FOLD LIN zero_pt Vel=0.5 m/s CPDAT1 Tool[1] Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:start_pt, 3:, 5:0.5, 7:CPDAT1
+		$BWDSTART = FALSE
+		LDAT_ACT = LCPDAT1
+		FDAT_ACT = Fzero_pt
+		BAS(#CP_PARAMS, 0.5)
+		LIN pt : pt_offset : high_pt
+	;ENDFOLD	
+	
+	;FOLD LIN zero_pt Vel=0.5 m/s CPDAT1 Tool[1] Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:start_pt, 3:, 5:0.5, 7:CPDAT1
+		$BWDSTART = FALSE
+		LDAT_ACT = LCPDAT1
+		FDAT_ACT = Fzero_pt
+		BAS(#CP_PARAMS, 0.5)
+		LIN pt : pt_offset
+	;ENDFOLD
+	
+	GRIP(grip)	
+	
+	;FOLD LIN zero_pt Vel=0.5 m/s CPDAT1 Tool[1] Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:start_pt, 3:, 5:0.5, 7:CPDAT1
+		$BWDSTART = FALSE
+		LDAT_ACT = LCPDAT1
+		FDAT_ACT = Fzero_pt
+		BAS(#CP_PARAMS, 0.5)
+		LIN pt : pt_offset : high_pt
+	;ENDFOLD
+			
+END
+
+DEF GRIP(state :IN)
+    DECL BOOL state
+	
+    $OUT[19] = state
+    $OUT[20] = NOT state
+    
+	WAIT FOR &IN[?] == TRUE
+END
