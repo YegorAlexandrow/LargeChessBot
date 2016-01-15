@@ -76,7 +76,7 @@ DEF chesskuka( )
     
 END
 
-DEF MOVE_FIELD(pt_low :IN, pt_high :IN, grip :IN)
+DEF MOVE_FIELD(pt :IN, pt_offset :IN, grip :IN)
 	DECL E6POS pt, pt_offset
 	DECL BOOL grip
 	
