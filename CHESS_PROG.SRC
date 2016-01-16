@@ -1,6 +1,6 @@
 DEF CHESS_PROG( )
-	DECL POS board[2, 64]
 	DECL INT content, header, last_content, last_header;
+	DECL INT del_pos = 1;
 	
 	;FOLD INI
 	  ;FOLD BASISTECH INI
@@ -14,8 +14,24 @@ DEF CHESS_PROG( )
 	  ;ENDFOLD (USER INI)
 	;ENDFOLD (INI)
 	
-	PTP HOME Vel= 50% DEFAULT
-	INIT_BOARD(board[,], 30, 6, 90)
+	;FOLD PTP HOME  Vel= 100 % DEFAULT;%{PE}%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:HOME, 3:, 5:100, 7:DEFAULT
+        $BWDSTART = FALSE
+        PDAT_ACT = PDEFAULT
+        FDAT_ACT = FHOME
+        BAS (#PTP_PARAMS, 100 )
+        $H_POS = XHOME
+        PTP XHOME
+    ;ENDFOLD
+	
+	GRIP(FALSE)
+	
+	;FOLD PTP start_pt Vel=100 % PDAT8 Tool[1] Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:start_pt, 3:, 5:100, 7:PDAT8
+		$BWDSTART = FALSE
+		PDAT_ACT = PPDAT8
+		FDAT_ACT = Fstart_pt
+		BAS(#PTP_PARAMS, 100)
+		PTP Xstart_pt 
+	;ENDFOLD
 	
 	LOOP
 		$OUT[1] = TRUE
@@ -30,84 +46,46 @@ DEF CHESS_PROG( )
 		IF last_content <> content OR last_header <> header THEN
 			SWITCH header
 				CASE 1
-					$OUT[1] = FALSE
-					
-					LIN start_pt : board[2, content+1] Vel= 0.5 m/s
-					WAIT SEC 1.2
-					LIN start_pt : board[1, content+1] Vel= 0.5 m/s
-					WAIT SEC 1.2
-					
-					PUT_FIG( );
-					
-					LIN start_pt : board[2, content+1] Vel= 0.5 m/s
-					WAIT SEC 1.2
-					
+					$OUT[1] = FALSE	
+					MOVE_FIELD(Xzero_pt, board[content], FALSE)	
 				CASE 2
 					$OUT[1] = FALSE
-					
-					LIN start_pt : board[2, content+1] Vel= 0.5 m/s
-					WAIT SEC 1.2
-					LIN start_pt : board[1, content+1] Vel= 0.5 m/s
-					WAIT SEC 1.2
-					
-					TAKE_FIG( );
-					
-					LIN start_pt : board[2, content+1] Vel= 0.5 m/s
-					WAIT SEC 1.2
-					
+					MOVE_FIELD(Xzero_pt, board[content], TRUE)	
 				CASE 3
 					$OUT[1] = FALSE
-					
-					LIN start_pt : board[2, content+1] Vel= 0.5 m/s
-					WAIT SEC 1.2
-					LIN start_pt : board[1, content+1] Vel= 0.5 m/s
-					WAIT SEC 1.2
-					
-					TAKE_FIG( );
-					
-					LIN start_pt : board[2, content+1] Vel= 0.5 m/s
-					WAIT SEC 1.2
-					
-					LIN pt_chess_box : board[2, content+1] Vel= 0.5 m/s
-					WAIT SEC 1.2
-					PUT_FIG( );
-					
+					MOVE_FIELD(Xzero_pt, board[content], TRUE)
+					MOVE_FIELD(Xdel_pt, del_figs[del_pos], FALSE)	
+					del_pos = del_pos + 1
 				CASE 0
 					SWITCH content
 						CASE 1
 							$OUT[1] = FALSE
-							LIN pt_base Vel= 0.5 m/s
-							WAIT SEC 1.2
-							
-						CASE 2
-							$OUT[1] = FALSE
-							LIN pt_clock_high Vel= 0.5 m/s
-							WAIT SEC 1.2
-							LIN pt_clock_low Vel= 0.5 m/s
-							WAIT SEC 1.2
-							LIN pt_clock_high Vel= 0.5 m/s
-							WAIT SEC 1.2
-							
+							;FOLD LIN start_pt Vel=0.5 m/s CPDAT1 Tool[1] Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:start_pt, 3:, 5:0.5, 7:CPDAT1
+								$BWDSTART = FALSE
+								LDAT_ACT = LCPDAT1
+								FDAT_ACT = Fstart_pt
+								BAS(#CP_PARAMS, 0.5)
+								LIN Xstart_pt 
+							;ENDFOLD
+						
+						CASE 3
+							del_pos = 1
+						
 						CASE 31
 							EXIT
 					ENDSWITCH
 			ENDSWITCH
 		ENDIF
 	ENDLOOP
-END
-
-DEF TAKE_FIG( )
-	$OUT[?] = TRUE
-	$OUT[?] = FALSE
 	
-	WAIT FOR $IN[?] = TRUE 
-END
-
-DEF PUT_FIG( )
-	$OUT[?] = FALSE
-	$OUT[?] = TRUE
-	
-	WAIT FOR $IN[?] = TRUE 
+	;FOLD PTP HOME  Vel= 100 % DEFAULT;%{PE}%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:HOME, 3:, 5:100, 7:DEFAULT
+        $BWDSTART = FALSE
+        PDAT_ACT = PDEFAULT
+        FDAT_ACT = FHOME
+        BAS (#PTP_PARAMS, 100 )
+        $H_POS = XHOME
+        PTP XHOME
+    ;ENDFOLD
 END
 
 DEFFCT INT GET_CMD_CONTENT( )
@@ -130,15 +108,43 @@ DEFFCT INT GET_CMD_HEADER( )
 	RETURN result
 ENDFCT
 
-DEF INIT_BOARD(board[,] : OUT, w : IN, h1 : IN, h2 : IN)
-	DECL POS board[,]
-	DECL INT w, h1, h2
-	DECL INT x, y
+DEF GRIP(state :IN)
+    DECL BOOL state
 	
-	FOR y = 0 TO 7 STEP 1
-		FOR x = 1 TO 8 STEP 1
-			board[1, y * 8 + x] = {X (w * x - w / 2), Y (w * y + w / 2), Z h1, A 0, B 0, C 0, E1 0, E2 0, E3 0, E4 0, E5 0, E6 0}
-			board[2, y * 8 + x] = {X (w * x - w / 2), Y (w * y + w / 2), Z h2, A 0, B 0, C 0, E1 0, E2 0, E3 0, E4 0, E5 0, E6 0}
-		ENDFOR
-	ENDFOR	
+    $OUT[19] = state
+    $OUT[20] = NOT state
+    
+	WAIT FOR &IN[?] == TRUE
+END
+
+DEF MOVE_FIELD(pt :IN, pt_offset :IN, grip :IN)
+	DECL E6POS pt, pt_offset
+	DECL BOOL grip
+	
+	;FOLD LIN zero_pt Vel=0.5 m/s CPDAT1 Tool[1] Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:start_pt, 3:, 5:0.5, 7:CPDAT1
+		$BWDSTART = FALSE
+		LDAT_ACT = LCPDAT1
+		FDAT_ACT = Fzero_pt
+		BAS(#CP_PARAMS, 0.5)
+		LIN pt : pt_offset : high_pt
+	;ENDFOLD	
+	
+	;FOLD LIN zero_pt Vel=0.5 m/s CPDAT1 Tool[1] Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:start_pt, 3:, 5:0.5, 7:CPDAT1
+		$BWDSTART = FALSE
+		LDAT_ACT = LCPDAT1
+		FDAT_ACT = Fzero_pt
+		BAS(#CP_PARAMS, 0.5)
+		LIN pt : pt_offset
+	;ENDFOLD
+	
+	GRIP(grip)	
+	
+	;FOLD LIN zero_pt Vel=0.5 m/s CPDAT1 Tool[1] Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:start_pt, 3:, 5:0.5, 7:CPDAT1
+		$BWDSTART = FALSE
+		LDAT_ACT = LCPDAT1
+		FDAT_ACT = Fzero_pt
+		BAS(#CP_PARAMS, 0.5)
+		LIN pt : pt_offset : high_pt
+	;ENDFOLD
+			
 END
