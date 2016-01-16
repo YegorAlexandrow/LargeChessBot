@@ -1,0 +1,123 @@
+&ACCESS RVP
+&REL 54
+&PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
+&PARAM EDITMASK = *
+DEFDAT  CHESS_PROG
+;FOLD EXTERNAL DECLARATIONS;%{PE}%MKUKATPBASIS,%CEXT,%VCOMMON,%P
+;FOLD BASISTECH EXT;%{PE}%MKUKATPBASIS,%CEXT,%VEXT,%P
+EXT  BAS (BAS_COMMAND  :IN,REAL  :IN )
+DECL INT SUCCESS
+;ENDFOLD (BASISTECH EXT)
+;FOLD USER EXT;%{E}%MKUKATPUSER,%CEXT,%VEXT,%P
+;Make your modifications here
+
+;ENDFOLD (USER EXT)
+;ENDFOLD (EXTERNAL DECLARATIONS)
+DECL E6POS XSTART_PT={X 358.504486,Y -116.551697,Z 477.895203,A 179.002396,B -1.09650397,C 179.718399,S 2,T 2,E1 0.0,E2 0.0,E3 0.0,E4 0.0,E5 0.0,E6 0.0}
+DECL BASIS_SUGG_T LAST_BASIS={POINT1[] "start_pt                ",POINT2[] "start_pt                ",CP_PARAMS[] "CPDAT3                  ",PTP_PARAMS[] "PDAT8                   ",CONT[] "                        ",CP_VEL[] "0.5                     ",PTP_VEL[] "100                     ",SYNC_PARAMS[] "SYNCDAT                 ",SPL_NAME[] "S0                      "}
+DECL FDAT Fstart_pt={TOOL_NO 1,BASE_NO 0,IPO_FRAME #BASE,POINT2[] " ",TQ_STATE FALSE}
+DECL PDAT PPDAT1={VEL 100.0,ACC 100.0,APO_DIST 100.0,APO_MODE #CDIS,GEAR_JERK 50.0}
+DECL E6POS XLOW_PT={X 358.416809,Y -116.5242,Z 386.972992,A 179.002502,B -1.09688401,C 179.718094,S 2,T 2,E1 0.0,E2 0.0,E3 0.0,E4 0.0,E5 0.0,E6 0.0}
+DECL FDAT Flow_pt={TOOL_NO 1,BASE_NO 0,IPO_FRAME #BASE,POINT2[] " ",TQ_STATE FALSE}
+DECL PDAT PPDAT2={VEL 100.0,ACC 100.0,APO_DIST 100.0,APO_MODE #CDIS,GEAR_JERK 50.0}
+DECL E6POS XDEL_PT={X 318.4758,Y -347.648285,Z 386.96759,A 179.002502,B -1.09587002,C 179.719498,S 2,T 2,E1 0.0,E2 0.0,E3 0.0,E4 0.0,E5 0.0,E6 0.0}
+DECL FDAT Fdel_pt={TOOL_NO 1,BASE_NO 0,IPO_FRAME #BASE,POINT2[] " ",TQ_STATE FALSE}
+DECL PDAT PPDAT3={VEL 100.0,ACC 100.0,APO_DIST 100.0,APO_MODE #CDIS,GEAR_JERK 50.0}
+DECL E6POS Xzero_pt={X 358.416809,Y -116.5242,Z 386.972992,A 179.002502,B -1.09688401,C 179.718094,S 2,T 2,E1 0.0,E2 0.0,E3 0.0,E4 0.0,E5 0.0,E6 0.0}
+DECL FDAT Fzero_pt={TOOL_NO 1,BASE_NO 0,IPO_FRAME #BASE,POINT2[] " ",TQ_STATE FALSE}
+
+DECL E6POS high_pt={X 0, Y 0, Z 100, A 0, B 0, C 0}
+
+DECL E6POS board[64]
+board[1]={X 20.0, Y 20.0, Z 0, A 0, B 0, C 0}
+board[2]={X 60.0, Y 20.0, Z 0, A 0, B 0, C 0}
+board[3]={X 100.0, Y 20.0, Z 0, A 0, B 0, C 0}
+board[4]={X 140.0, Y 20.0, Z 0, A 0, B 0, C 0}
+board[5]={X 180.0, Y 20.0, Z 0, A 0, B 0, C 0}
+board[6]={X 220.0, Y 20.0, Z 0, A 0, B 0, C 0}
+board[7]={X 260.0, Y 20.0, Z 0, A 0, B 0, C 0}
+board[8]={X 300.0, Y 20.0, Z 0, A 0, B 0, C 0}
+board[9]={X 20.0, Y 60.0, Z 0, A 0, B 0, C 0}
+board[10]={X 60.0, Y 60.0, Z 0, A 0, B 0, C 0}
+board[11]={X 100.0, Y 60.0, Z 0, A 0, B 0, C 0}
+board[12]={X 140.0, Y 60.0, Z 0, A 0, B 0, C 0}
+board[13]={X 180.0, Y 60.0, Z 0, A 0, B 0, C 0}
+board[14]={X 220.0, Y 60.0, Z 0, A 0, B 0, C 0}
+board[15]={X 260.0, Y 60.0, Z 0, A 0, B 0, C 0}
+board[16]={X 300.0, Y 60.0, Z 0, A 0, B 0, C 0}
+board[17]={X 20.0, Y 100.0, Z 0, A 0, B 0, C 0}
+board[18]={X 60.0, Y 100.0, Z 0, A 0, B 0, C 0}
+board[19]={X 100.0, Y 100.0, Z 0, A 0, B 0, C 0}
+board[20]={X 140.0, Y 100.0, Z 0, A 0, B 0, C 0}
+board[21]={X 180.0, Y 100.0, Z 0, A 0, B 0, C 0}
+board[22]={X 220.0, Y 100.0, Z 0, A 0, B 0, C 0}
+board[23]={X 260.0, Y 100.0, Z 0, A 0, B 0, C 0}
+board[24]={X 300.0, Y 100.0, Z 0, A 0, B 0, C 0}
+board[25]={X 20.0, Y 140.0, Z 0, A 0, B 0, C 0}
+board[26]={X 60.0, Y 140.0, Z 0, A 0, B 0, C 0}
+board[27]={X 100.0, Y 140.0, Z 0, A 0, B 0, C 0}
+board[28]={X 140.0, Y 140.0, Z 0, A 0, B 0, C 0}
+board[29]={X 180.0, Y 140.0, Z 0, A 0, B 0, C 0}
+board[30]={X 220.0, Y 140.0, Z 0, A 0, B 0, C 0}
+board[31]={X 260.0, Y 140.0, Z 0, A 0, B 0, C 0}
+board[32]={X 300.0, Y 140.0, Z 0, A 0, B 0, C 0}
+board[33]={X 20.0, Y 180.0, Z 0, A 0, B 0, C 0}
+board[34]={X 60.0, Y 180.0, Z 0, A 0, B 0, C 0}
+board[35]={X 100.0, Y 180.0, Z 0, A 0, B 0, C 0}
+board[36]={X 140.0, Y 180.0, Z 0, A 0, B 0, C 0}
+board[37]={X 180.0, Y 180.0, Z 0, A 0, B 0, C 0}
+board[38]={X 220.0, Y 180.0, Z 0, A 0, B 0, C 0}
+board[39]={X 260.0, Y 180.0, Z 0, A 0, B 0, C 0}
+board[40]={X 300.0, Y 180.0, Z 0, A 0, B 0, C 0}
+board[41]={X 20.0, Y 220.0, Z 0, A 0, B 0, C 0}
+board[42]={X 60.0, Y 220.0, Z 0, A 0, B 0, C 0}
+board[43]={X 100.0, Y 220.0, Z 0, A 0, B 0, C 0}
+board[44]={X 140.0, Y 220.0, Z 0, A 0, B 0, C 0}
+board[45]={X 180.0, Y 220.0, Z 0, A 0, B 0, C 0}
+board[46]={X 220.0, Y 220.0, Z 0, A 0, B 0, C 0}
+board[47]={X 260.0, Y 220.0, Z 0, A 0, B 0, C 0}
+board[48]={X 300.0, Y 220.0, Z 0, A 0, B 0, C 0}
+board[49]={X 20.0, Y 260.0, Z 0, A 0, B 0, C 0}
+board[50]={X 60.0, Y 260.0, Z 0, A 0, B 0, C 0}
+board[51]={X 100.0, Y 260.0, Z 0, A 0, B 0, C 0}
+board[52]={X 140.0, Y 260.0, Z 0, A 0, B 0, C 0}
+board[53]={X 180.0, Y 260.0, Z 0, A 0, B 0, C 0}
+board[54]={X 220.0, Y 260.0, Z 0, A 0, B 0, C 0}
+board[55]={X 260.0, Y 260.0, Z 0, A 0, B 0, C 0}
+board[56]={X 300.0, Y 260.0, Z 0, A 0, B 0, C 0}
+board[57]={X 20.0, Y 300.0, Z 0, A 0, B 0, C 0}
+board[58]={X 60.0, Y 300.0, Z 0, A 0, B 0, C 0}
+board[59]={X 100.0, Y 300.0, Z 0, A 0, B 0, C 0}
+board[60]={X 140.0, Y 300.0, Z 0, A 0, B 0, C 0}
+board[61]={X 180.0, Y 300.0, Z 0, A 0, B 0, C 0}
+board[62]={X 220.0, Y 300.0, Z 0, A 0, B 0, C 0}
+board[63]={X 260.0, Y 300.0, Z 0, A 0, B 0, C 0}
+board[64]={X 300.0, Y 300.0, Z 0, A 0, B 0, C 0}
+
+DECL E6POS del_figs[16]
+del_figs[1]={X 20.0, Y 20.0, Z 0, A 0, B 0, C 0}
+del_figs[2]={X 20.0, Y 60.0, Z 0, A 0, B 0, C 0}
+del_figs[3]={X 20.0, Y 100.0, Z 0, A 0, B 0, C 0}
+del_figs[4]={X 20.0, Y 140.0, Z 0, A 0, B 0, C 0}
+del_figs[5]={X 20.0, Y 180.0, Z 0, A 0, B 0, C 0}
+del_figs[6]={X 20.0, Y 220.0, Z 0, A 0, B 0, C 0}
+del_figs[7]={X 20.0, Y 260.0, Z 0, A 0, B 0, C 0}
+del_figs[8]={X 20.0, Y 300.0, Z 0, A 0, B 0, C 0}
+del_figs[9]={X 60.0, Y 20.0, Z 0, A 0, B 0, C 0}
+del_figs[10]={X 60.0, Y 60.0, Z 0, A 0, B 0, C 0}
+del_figs[11]={X 60.0, Y 100.0, Z 0, A 0, B 0, C 0}
+del_figs[12]={X 60.0, Y 140.0, Z 0, A 0, B 0, C 0}
+del_figs[13]={X 60.0, Y 180.0, Z 0, A 0, B 0, C 0}
+del_figs[14]={X 60.0, Y 220.0, Z 0, A 0, B 0, C 0}
+del_figs[15]={X 60.0, Y 260.0, Z 0, A 0, B 0, C 0}
+del_figs[16]={X 60.0, Y 300.0, Z 0, A 0, B 0, C 0}
+
+DECL PDAT PPDAT5={VEL 100.0,ACC 100.0,APO_DIST 100.0,APO_MODE #CDIS,GEAR_JERK 50.0}
+DECL PDAT PPDAT6={VEL 100.0,ACC 100.0,APO_DIST 100.0,APO_MODE #CDIS,GEAR_JERK 50.0}
+DECL PDAT PPDAT7={VEL 100.0,ACC 100.0,APO_DIST 100.0,APO_MODE #CDIS,GEAR_JERK 50.0}
+DECL LDAT LCPDAT1={VEL 2.0,ACC 100.0,APO_DIST 100.0,APO_FAC 50.0,AXIS_VEL 100.0,AXIS_ACC 100.0,ORI_TYP #VAR,CIRC_TYP #BASE,JERK_FAC 50.0,GEAR_JERK 50.0,EXAX_IGN 0}
+DECL LDAT LCPDAT0={VEL 2.0,ACC 100.0,APO_DIST 100.0,APO_FAC 50.0,AXIS_VEL 100.0,AXIS_ACC 100.0,ORI_TYP #VAR,CIRC_TYP #BASE,JERK_FAC 50.0,GEAR_JERK 50.0,EXAX_IGN 0}
+DECL LDAT LCPDAT2={VEL 2.0,ACC 100.0,APO_DIST 100.0,APO_FAC 50.0,AXIS_VEL 100.0,AXIS_ACC 100.0,ORI_TYP #VAR,CIRC_TYP #BASE,JERK_FAC 50.0,GEAR_JERK 50.0,EXAX_IGN 0}
+DECL LDAT LCPDAT3={VEL 2.0,ACC 100.0,APO_DIST 100.0,APO_FAC 50.0,AXIS_VEL 100.0,AXIS_ACC 100.0,ORI_TYP #VAR,CIRC_TYP #BASE,JERK_FAC 50.0,GEAR_JERK 50.0,EXAX_IGN 0}
+DECL PDAT PPDAT8={VEL 100.0,ACC 100.0,APO_DIST 100.0,APO_MODE #CDIS,GEAR_JERK 50.0}
+ENDDAT
