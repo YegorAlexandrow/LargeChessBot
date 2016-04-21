@@ -1,0 +1,220 @@
+&ACCESS RVP
+&REL 122
+&PARAM DISKPATH = KRC:\R1\Program
+&PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
+&PARAM EDITMASK = *
+DEF chess_kuka2( )
+
+   DECL INT content, header, last_content, last_header, del_pos
+;FOLD INI
+  ;FOLD BASISTECH INI
+    GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+    INTERRUPT ON 3 
+    BAS (#INITMOV,0 )
+  ;ENDFOLD (BASISTECH INI)
+  ;FOLD USER INI
+    ;Make your modifications here
+
+  ;ENDFOLD (USER INI)
+;ENDFOLD (INI)
+
+del_pos=1   
+header=0
+content=1
+;FOLD PTP HOME Vel=30 % DEFAULT;%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:HOME, 3:, 5:30, 7:DEFAULT
+$BWDSTART=FALSE
+PDAT_ACT=PDEFAULT
+FDAT_ACT=FHOME
+BAS(#PTP_PARAMS,30)
+$H_POS=XHOME
+PTP XHOME 
+;ENDFOLD
+
+;FOLD PTP start_pt Vel=30 % PDAT1 Tool[1]:sxvat chess Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:start_pt, 3:, 5:30, 7:PDAT1
+$BWDSTART=FALSE
+PDAT_ACT=PPDAT1
+FDAT_ACT=Fstart_pt
+BAS(#PTP_PARAMS,30)
+PTP Xstart_pt 
+;ENDFOLD
+grip(true)
+grip(false)
+;FOLD PTP zero_pt Vel=30 % PDAT2 Tool[1]:sxvat chess Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:zero_pt, 3:, 5:30, 7:PDAT2
+$BWDSTART=FALSE
+PDAT_ACT=PPDAT2
+FDAT_ACT=Fzero_pt
+BAS(#PTP_PARAMS,30)
+PTP Xzero_pt 
+;ENDFOLD
+
+;FOLD PTP del_pt Vel=30 % PDAT3 Tool[1]:sxvat chess Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:del_pt, 3:, 5:30, 7:PDAT3
+$BWDSTART=FALSE
+PDAT_ACT=PPDAT3
+FDAT_ACT=Fdel_pt
+BAS(#PTP_PARAMS,30)
+PTP Xdel_pt 
+;ENDFOLD
+
+;FOLD LIN start_pt Vel=0.5 m/s CPDAT1 Tool[1]:sxvat chess Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:start_pt, 3:, 5:0.5, 7:CPDAT1
+$BWDSTART=FALSE
+LDAT_ACT=LCPDAT1
+FDAT_ACT=Fstart_pt
+BAS(#CP_PARAMS,0.5)
+LIN Xstart_pt 
+;ENDFOLD
+
+;FOLD LIN zero_pt Vel=0.5 m/s CPDAT2 Tool[1]:sxvat chess Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:zero_pt, 3:, 5:0.5, 7:CPDAT2
+$BWDSTART=FALSE
+LDAT_ACT=LCPDAT2
+FDAT_ACT=Fzero_pt
+BAS(#CP_PARAMS,0.5)
+LIN Xzero_pt 
+;ENDFOLD
+;FOLD LIN del_pt Vel=0.5 m/s CPDAT3 Tool[1]:sxvat chess Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:del_pt, 3:, 5:0.5, 7:CPDAT3
+$BWDSTART=FALSE
+LDAT_ACT=LCPDAT3
+FDAT_ACT=Fdel_pt
+BAS(#CP_PARAMS,0.5)
+LIN Xdel_pt 
+;ENDFOLD
+;FOLD LIN qwerty Vel=0.5 m/s CPDAT5 Tool[1]:sxvat chess Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:qwerty, 3:, 5:0.5, 7:CPDAT5
+$BWDSTART=FALSE
+LDAT_ACT=LCPDAT5
+FDAT_ACT=Fqwerty
+BAS(#CP_PARAMS,0.5)
+LIN Xqwerty 
+;ENDFOLD
+;FOLD LIN start_pt Vel=0.5 m/s CPDAT4 Tool[1]:sxvat chess Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:start_pt, 3:, 5:0.5, 7:CPDAT4
+$BWDSTART=FALSE
+LDAT_ACT=LCPDAT4
+FDAT_ACT=Fstart_pt
+BAS(#CP_PARAMS,0.5)
+LIN Xstart_pt 
+;ENDFOLD
+	LOOP
+      $OUT[21] = TRUE
+      wait sec 1
+      last_header = header
+      last_content = content
+
+
+		header  = GET_CMD_HEADER()
+		content = GET_CMD_CONTENT()
+		
+IF (last_content<>content)OR(last_header<>header) THEN
+			SWITCH header
+				CASE 1
+               $OUT[21] = FALSE   
+					MOVE_FIELD(Xzero_pt, board[content], FALSE)	
+				CASE 2
+               $OUT[21] = FALSE
+					MOVE_FIELD(Xzero_pt, board[content], TRUE)	
+				CASE 3
+               $OUT[21] = FALSE
+					MOVE_FIELD(Xzero_pt, board[content], TRUE)
+					MOVE_FIELD(Xdel_pt, del_figs[del_pos], FALSE)	
+					del_pos = del_pos + 1
+         case 0
+$OUT[21]=FALSE
+;FOLD LIN start_pt Vel=0.5 m/s CPDAT7 Tool[1]:sxvat chess Base[0];%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:start_pt, 3:, 5:0.5, 7:CPDAT7
+$BWDSTART=FALSE
+LDAT_ACT=LCPDAT7
+FDAT_ACT=Fstart_pt
+BAS(#CP_PARAMS,0.5)
+LIN Xstart_pt 
+;ENDFOLD
+			ENDSWITCH
+		ENDIF
+	ENDLOOP
+	
+;FOLD PTP HOME Vel=30 % DEFAULT;%{PE}%R 8.2.20,%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:HOME, 3:, 5:30, 7:DEFAULT
+$BWDSTART=FALSE
+PDAT_ACT=PDEFAULT
+FDAT_ACT=FHOME
+BAS(#PTP_PARAMS,30)
+$H_POS=XHOME
+PTP XHOME 
+;ENDFOLD
+END
+
+DEFFCT INT GET_CMD_CONTENT( )
+   INT result, i
+result = 0
+	
+   FOR i = 25 TO 20 STEP -1
+
+		result = result * 2
+      IF ($IN[i] == TRUE) THEN
+          result = result+1
+      ENDIF
+	ENDFOR
+   result = result + 1
+	RETURN result
+ENDFCT
+
+DEFFCT INT GET_CMD_HEADER( )
+   INT result
+result=0
+	
+   IF $IN[26] == TRUE THEN
+     result = result + 1
+   ENDIF
+
+
+   IF $IN[27] == TRUE THEN
+     result = result + 2
+   ENDIF
+
+
+	
+	RETURN result
+ENDFCT
+
+DEF GRIP(state :IN)
+    DECL BOOL state
+   if(state==false) THEN
+
+       $OUT[19] = FALSE
+       $OUT[20] = FALSE
+wait sec 1
+       $OUT[20] = TRUE
+   endif
+
+
+if(STATE==true) then
+       $OUT[19] = FALSE
+       $OUT[20] = false
+wait sec 1
+       $OUT[19] = true
+  ENDIF
+wait sec 1
+
+       $OUT[19] = FALSE
+       $OUT[20] = false
+END
+
+DEF MOVE_FIELD(pt :IN, pt_offset :IN, grip :IN)
+	DECL E6POS pt, pt_offset
+	DECL BOOL grip
+	
+	$BWDSTART = FALSE
+	LDAT_ACT = LCPDAT_MOVE
+	FDAT_ACT = Fmove
+   BAS(#CP_PARAMS, 0.5)
+    LIN pt : pt_offset : high_pt	
+	
+	$BWDSTART = FALSE
+	LDAT_ACT = LCPDAT_MOVE
+	FDAT_ACT = Fmove
+   BAS(#CP_PARAMS, 0.5)
+	LIN pt : pt_offset
+	
+	GRIP(grip)	
+	
+	$BWDSTART = FALSE
+	LDAT_ACT=LCPDAT_MOVE
+	FDAT_ACT=Fmove
+   BAS(#CP_PARAMS, 0.5)
+	LIN pt : pt_offset : high_pt
+			
+END
