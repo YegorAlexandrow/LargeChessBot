@@ -32,25 +32,29 @@ void addToArrayList(byte n) {
 //Отправка команды роботу
 void sendNextCommand() {
   for (int i = 0; i < 8; ++i) {
-    digitalWrite(FIRST_PIN + i, (array_list[ptr % 16] >> i) % 2);
+    digitalWrite(FIRST_PIN + i, !((array_list[ptr % 16] >> i) % 2));
   }
-
+  
+  if(array_list[ptr % 16] == CMD_HOME) delay(5500);
+  if(array_list[ptr % 16] >> 6 == 3) delay(5500);
+  
   ptr++;
 }
 
-
 //Совершение хода
 void makeMove() {
-  addToArrayList(HEADER_TAKE + (Serial.read() - 'a') + ((Serial.read() - '1') << 3));
-  addToArrayList(HEADER_PUT  + (Serial.read() - 'a') + ((Serial.read() - '1') << 3));
-  addToArrayList(CMD_CLOCK);
-  addToArrayList(CMD_HOME);
+  addToArrayList(HEADER_TAKE + Serial.read());
+  addToArrayList(HEADER_PUT  + Serial.read());
 }
 
+bool pval = 0;
 void setup() {
   Serial.begin(9600);
 
-  for (int i = 0; i < 8; ++i) pinMode(FIRST_PIN, OUTPUT);
+  for (int i = 0; i < 8; ++i) {
+    pinMode(FIRST_PIN+i, OUTPUT);
+    digitalWrite(FIRST_PIN+i, 1);
+  }
   pinMode(RX_PIN, INPUT);
   pinMode(CLOCK_PIN, INPUT);
 }
@@ -65,33 +69,38 @@ void loop() {
 
     switch (mark) {
       case CAPTURE_FIG_MARK: 
-          addToArrayList(HEADER_OUT + (Serial.read() - 'a') + ((Serial.read() - '1') << 3)); break;
+          addToArrayList(HEADER_OUT + Serial.read()); break;
       
       case MOVE_MARK: 
+          makeMove(); addToArrayList(CMD_HOME); break;
+          
+      case 'm': 
           makeMove(); break;
       
       case NEW_GAME_MARK: 
           addToArrayList(CMD_HOME); break;
-		  
+     
       case FINISH_MARK: 
           addToArrayList(CMD_FINISH); break;
       
       default: Serial.flush(); break;
     }
   }
-  
   //Если часы были переключены, мы сообщаем об этом компьютеру
   if(clock_signal != digitalRead(CLOCK_PIN)) {
-    if(clock_signal = digitalRead(CLOCK_PIN)) Serial.write(1);
-    delay(150);
+    if(clock_signal = digitalRead(CLOCK_PIN)) {
+      Serial.write(1);
+      delay(120);
+    }
   }
   
   //Если робот готов принять следующую команду (а также есть, что отправлять),
   //Отправляем её и ждём, когда робот на нее среагирует
-  if(digitalRead(RX_PIN) && ptr != ptr_last) {
-    sendNextCommand();
-    delay(200);
-  }
-
-  delay(50);
+    if(digitalRead(RX_PIN) && ptr != ptr_last) {
+        sendNextCommand();
+        pval = false;
+        delay(7500);
+    }
+      
+  delay(35);
 }
